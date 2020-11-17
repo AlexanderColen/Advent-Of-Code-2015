@@ -37,11 +37,29 @@ def puzzle1(instructions: []):
     return count
 
 
-def puzzle2():
-    return 0
+def puzzle2(instructions: []):
+    grid = np.zeros((1000, 1000))
+    for instruction in instructions:
+        instruction = instruction.replace('turn ', '')
+        instruction = instruction.replace(' through', '')
+        whatdo, start, end = instruction.split()
+        start_x, start_y = start.split(',')
+        end_x, end_y = end.split(',')
+        increase = 1 if whatdo == 'on' else -1 if whatdo == 'off' else 2
+        # Toggle lights
+        if whatdo == 'toggle':
+            for y in range(int(start_x), int(end_x) + 1):
+                for x in range(int(start_y), int(end_y) + 1):
+                    grid[x, y] += increase
+        # Turn lights on/off
+        else:
+            for y in range(int(start_x), int(end_x) + 1):
+                for x in range(int(start_y), int(end_y) + 1):
+                    grid[x, y] = grid[x, y] + increase if grid[x, y] + increase > 0 else 0
+    return np.sum(grid)
 
 
 if __name__ == '__main__':
     parsed_input = parse_input()
     print(f'Puzzle 1 solution: {puzzle1(instructions=parsed_input)}')
-    print(f'Puzzle 2 solution: {puzzle2()}')
+    print(f'Puzzle 2 solution: {puzzle2(instructions=parsed_input)}')
